@@ -61,7 +61,7 @@ spec:
       - image: stevesloka/code-server
         imagePullPolicy: Always
         name: code-server
-        command: ["/code-server"]
+        command: ["code-server"]
         args:
         - /go/src
         - --allow-http
