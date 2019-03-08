@@ -1,0 +1,39 @@
+
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: code-server
+  namespace: code-server
+spec:
+  secretName: code-server
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: code.example.com
+  dnsNames:
+  - code.example.com
+  acme:
+    config:
+    - http01:
+        ingressClass: contour
+      domains:
+      - code.example.com
+---
+apiVersion: contour.heptio.com/v1beta1
+kind: IngressRoute
+metadata: 
+  labels:
+    app: code-server
+  name: code-server
+  namespace: code-server
+spec: 
+  virtualhost:
+    fqdn: code.example.com
+    tls:
+      secretName: code-server
+  routes: 
+    - match: /
+      enableWebsockets: true
+      services: 
+        - name: code-server 
+          port: 80
